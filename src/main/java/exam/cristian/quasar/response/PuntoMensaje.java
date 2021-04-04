@@ -8,11 +8,11 @@ import lombok.Setter;
 @Setter
 public class PuntoMensaje {
 
-   private PositionDto positionDto;
+   private PositionDto position;
    private String message;
 
-    public PuntoMensaje(PositionDto positionDto, String message){
-        this.positionDto = positionDto;
+    public PuntoMensaje(PositionDto position, String message){
+        this.position = position;
         this.message= message;
 
     }
