@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 
 
 @AllArgsConstructor
@@ -27,6 +28,7 @@ public class Satellites {
     private String name ;
 
     @Column(name="distance")
+    @Min(value = 0, message ="{distance.min}" )
     private Float distance ;
 
 

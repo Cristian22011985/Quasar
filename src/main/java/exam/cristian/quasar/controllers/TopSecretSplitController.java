@@ -8,13 +8,26 @@ import exam.cristian.quasar.services.TopSecretSplit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
+
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 public class TopSecretSplitController {
 
 
@@ -26,12 +39,12 @@ public class TopSecretSplitController {
 
     @PostMapping
     @RequestMapping("/topsecret_split/{satellite_name}")
-    public ResponseEntity<Object> guardar(@PathVariable("satellite_name") String satelliteName, @RequestBody Satellites satellites) {
+    public ResponseEntity<Object> guardar( @PathVariable("satellite_name") @Pattern(regexp = "sato|skywalker|kenobi", flags = Pattern.Flag.CASE_INSENSITIVE) String satelliteName, @Valid @RequestBody Satellites satellites) {
 
-        if (!topSecretSplit.validarSatellite(satelliteName.toLowerCase() )){
+       /* if (!topSecretSplit.validarSatellite(satelliteName.toLowerCase())) {
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        }*/
 
 
         try {
@@ -113,5 +126,32 @@ public class TopSecretSplitController {
 
     }
 
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity handleValidatedParametersErrors (ConstraintViolationException ex) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+       String body = "{\"message\": \"Los parametros establecidos no son correctos\"}";
+        return ResponseEntity
+                .status(status)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body);
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<Object> handleMethodParametersErrors (MethodArgumentNotValidException ex)  {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        HashMap<String, String> map = new HashMap<>();
+
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            map.put(error.getField(), error.getDefaultMessage());
+
+        }
+
+        return ResponseEntity
+                .status(status)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(map);
+    }
 
 }

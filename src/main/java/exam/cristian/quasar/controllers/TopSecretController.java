@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 public class TopSecretController {
@@ -20,7 +22,7 @@ public class TopSecretController {
 
     @PostMapping
     @RequestMapping("/topsecret")
-    public ResponseEntity<Object>createMessageLocation(@RequestBody SatellitesDto satellitesDTO) {
+    public ResponseEntity<Object>createMessageLocation( @Valid @RequestBody SatellitesDto satellitesDTO) {
 
         String[] kenobi = new String[0];
         String[] skywalker = new String[0];
